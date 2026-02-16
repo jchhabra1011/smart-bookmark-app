@@ -10,20 +10,23 @@ export default function Home() {
   const [title,setTitle] = useState("")
   const [url,setUrl] = useState("")
 
-  useEffect(()=>{
-    getUser()
+  useEffect(() => {
+  getUser()
 
-    const channel = supabase
-      .channel("bookmarks")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "bookmarks" },
-        () => fetchBookmarks()
-      )
-      .subscribe()
+  const channel = supabase
+    .channel("bookmarks")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "bookmarks" },
+      () => fetchBookmarks()
+    )
+    .subscribe()
 
-    return ()=> supabase.removeChannel(channel)
-  },[])
+  return () => {
+    supabase.removeChannel(channel)
+  }
+}, [])
+
 
   async function getUser(){
     const { data } = await supabase.auth.getUser()
